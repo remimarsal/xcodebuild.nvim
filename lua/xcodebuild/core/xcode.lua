@@ -1,6 +1,6 @@
 ---@mod xcodebuild.core.xcode Xcodebuild Wrapper
 ---@brief [[
----This module contains the wrapper for the `xcodebuild` tool.
+---This module contains the wrapper for the `xcodebuild` tool, with optional Tuist integration.
 ---
 ---It is used to interact with the Xcode project and perform various actions.
 ---@brief ]]
@@ -69,6 +69,7 @@ local util = require("xcodebuild.util")
 local notifications = require("xcodebuild.broadcasting.notifications")
 local constants = require("xcodebuild.core.constants")
 local xcodebuildOffline = require("xcodebuild.integrations.xcodebuild-offline")
+local tuistIntegration = require("xcodebuild.integrations.tuist")
 
 local M = {}
 local CANCELLED_CODE = 143
@@ -239,6 +240,7 @@ function M.get_destinations(projectFile, scheme, workingDirectory, callback)
   }
   command = util.skip_nil(command)
   command = xcodebuildOffline.wrap_command_if_needed(command)
+  command = tuistIntegration.wrap_command_if_needed(command)
   debug_print("get_destinations", command)
 
   return vim.fn.jobstart(command, {
@@ -290,6 +292,7 @@ function M.get_schemes(projectFile, workingDirectory, callback)
   }
   command = util.skip_nil(command)
   command = xcodebuildOffline.wrap_command_if_needed(command)
+  command = tuistIntegration.wrap_command_if_needed(command)
   debug_print("get_schemes", command)
 
   return vim.fn.jobstart(command, {
@@ -377,6 +380,7 @@ function M.get_project_information(xcodeproj, workingDirectory, callback)
   end
 
   command = xcodebuildOffline.wrap_command_if_needed(command)
+  command = tuistIntegration.wrap_command_if_needed(command)
   debug_print("get_project_information", command)
 
   return vim.fn.jobstart(command, {
@@ -439,6 +443,7 @@ function M.get_testplans(projectFile, scheme, callback)
   }
   command = util.skip_nil(command)
   command = xcodebuildOffline.wrap_command_if_needed(command)
+  command = tuistIntegration.wrap_command_if_needed(command)
   debug_print("get_testplans", command)
 
   return vim.fn.jobstart(command, {
@@ -487,6 +492,7 @@ function M.build_project(opts)
   command = util.merge_array(command, opts.extraBuildArgs)
   command = util.skip_nil(command)
   command = xcodebuildOffline.wrap_command_if_needed(command)
+  command = tuistIntegration.wrap_command_if_needed(command)
   debug_print("build_project", command)
 
   return vim.fn.jobstart(command, {
@@ -542,6 +548,7 @@ function M.get_build_settings(platform, projectFile, scheme, xcodeprojPath, call
     }
     command = util.skip_nil(command)
     command = xcodebuildOffline.wrap_command_if_needed(command)
+    command = tuistIntegration.wrap_command_if_needed(command)
 
     if config then
       table.insert(command, "-configuration")
@@ -965,6 +972,7 @@ function M.enumerate_tests(opts, callback)
   command = util.merge_array(command, opts.extraTestArgs)
   command = util.skip_nil(command)
   command = xcodebuildOffline.wrap_command_if_needed(command)
+  command = tuistIntegration.wrap_command_if_needed(command)
   debug_print("enumerate_tests", command)
 
   return vim.fn.jobstart(command, {
@@ -1050,6 +1058,7 @@ function M.run_tests(opts)
     end
   end
 
+  command = tuistIntegration.wrap_command_if_needed(command)
   debug_print("run_tests", command)
 
   return vim.fn.jobstart(command, {
