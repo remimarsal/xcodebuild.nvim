@@ -137,6 +137,13 @@ local defaults = {
     xcodebuild_offline = {
       enabled = false, -- improves build time (requires configuration, see `:h xcodebuild.xcodebuild-offline`)
     },
+    tuist = {
+      enabled = false, -- enable Tuist integration for improved build times
+      use_cache = true, -- use Tuist caching to speed up builds
+      debug = false, -- enable debug logging for Tuist integration
+      prefer_tuist_test = true, -- prefer using 'tuist test' over 'xcodebuild test'
+      prefer_tuist_build = true, -- prefer using 'tuist build' over 'xcodebuild build'
+    },
     xcode_build_server = {
       enabled = true, -- enable calling "xcode-build-server config" when project config changes
       guess_scheme = false, -- run "xcode-build-server config" with the scheme matching the current file's target
